@@ -1,13 +1,20 @@
-Fungsi is_symmetric(matriks):
-  // 1. Periksa apakah matriks adalah matriks persegi
-  Jika matriks.jumlah_baris TIDAK SAMA DENGAN matriks.jumlah_kolom:
-    Kembalikan FALSE
+def is_symmetric(matrix):
+    """
+    Periksa apakah sebuah matriks simetris.
+    Syarat: matriks harus berbentuk persegi (jumlah baris = jumlah kolom).
+    """
+    rows = len(matrix)
+    cols = len(matrix[0])
 
-  // 2. Periksa apakah elemen (i, j) sama dengan elemen (j, i)
-  Untuk setiap baris i dari 0 sampai jumlah_baris - 1:
-    Untuk setiap kolom j dari 0 sampai jumlah_kolom - 1:
-      Jika matriks.data[i][j] TIDAK SAMA DENGAN matriks.data[j][i]:
-	Kembalikan FALSE
+    # 1. Periksa apakah matriks persegi
+    if rows != cols:
+        return False
 
-  // 3. Jika semua elemen sesuai, matriks adalah simetris
-  Kembalikan TRUE
+    # 2. Periksa elemen simetris
+    for i in range(rows):
+        for j in range(cols):
+            if matrix[i][j] != matrix[j][i]:
+                return False
+
+    # 3. Semua elemen sesuai → matriks simetris
+    return True
