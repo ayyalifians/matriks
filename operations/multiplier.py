@@ -1,6 +1,6 @@
-Python
+#Python
 #matriks/operations/multiplier.py
-from ..matrix import Matrix
+from matrix import Matrix
 
 def multiply(A, B):
     """
