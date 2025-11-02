@@ -23,7 +23,8 @@ class RegressionApp:
 
     def run(self):
         """Menjalankan aplikasi Flask"""
-        self.app.run(debug=True, port=5000)
+        self.app.run(host="0.0.0.0", debug=True, port=5000)
 
 if __name__ == "__main__":
-    RegressionApp().run()
+    app_instance = RegressionApp()
+    app_instance.run()
