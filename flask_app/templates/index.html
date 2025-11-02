@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Prediksi Nilai Mahasiswa</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial; margin: 40px; background: #fafafa; }
+    h1 { text-align: center; }
+    canvas { width: 80%; max-width: 700px; margin: auto; display: block; }
+  </style>
+</head>
+<body>
+  <h1>Prediksi Nilai Mahasiswa Berdasarkan Lama Belajar</h1>
+  <canvas id="chart"></canvas>
+
+  <script>
+    const data = {{ data|tojson }};
+    const labels = data.map(d => d.x);
+    const actual = data.map(d => d.y_true);
+    const predicted = data.map(d => d.y_pred);
+
+    new Chart(document.getElementById('chart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: 'Nilai Asli', data: actual, backgroundColor: 'rgba(54, 162, 235, 0.7)' },
+          { label: 'Prediksi', data: predicted, backgroundColor: 'rgba(255, 99, 132, 0.7)' }
+        ]
+      },
+      options: {
+        scales: { y: { beginAtZero: true } },
+        plugins: { legend: { position: 'top' } }
+      }
+    });
+  </script>
+</body>
+</html>
