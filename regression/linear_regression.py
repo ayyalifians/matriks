@@ -44,3 +44,18 @@ class LinearRegression:
         beta = [[b] for b in self.coef_]
         y_pred = multiply(X, beta)
         return [row[0] for row in y_pred]
+
+    def score(self, X, y_true):
+        """
+        Menghitung R^2 score secara manual.
+        """
+        y_pred = self.predict(X)
+
+        y_true = [v if not isinstance(v, list) else v[0] for v in y_true]
+
+        y_mean = sum(y_true) / len(y_true)
+
+        ss_tot = sum((yt - y_mean) ** 2 for yt in y_true)
+        ss_res = sum((yt - yp) ** 2 for yt, yp in zip(y_true, y_pred))
+
+        return 1 - (ss_res / ss_tot)

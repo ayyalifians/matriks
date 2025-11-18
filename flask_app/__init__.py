@@ -1,5 +1,7 @@
+import sys
 import os
-import csv
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from regression.linear_regression import LinearRegression
 
 class StudentModel:

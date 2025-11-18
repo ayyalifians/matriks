@@ -6,7 +6,8 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from flask import Flask
-from controllers.regression_controller import regression_bp
+from flask_app.controllers.regression_controller import regression_bp
+from flask_app.models.student_model import StudentModel
 
 class RegressionApp:
     """
@@ -26,5 +27,7 @@ class RegressionApp:
         self.app.run(host="0.0.0.0", debug=True, port=5000)
 
 if __name__ == "__main__":
-    app_instance = RegressionApp()
+    app_instance = RegressionApp().app
     app_instance.run()
+
+app = RegressionApp().app
