@@ -1,5 +1,6 @@
 # flask_app/models/student_model.py
 import csv
+import numpy as np
 from regression.linear_regression import LinearRegression
 
 class StudentModel:
@@ -30,9 +31,10 @@ class StudentModel:
         self.model.fit(self.X, self.y)
 
     def get_predictions(self):
-        """Mengembalikan hasil prediksi setelah model dilatih"""
         predicted = self.model.predict(self.X)
-        return [
-            {"x": self.X[i][0], "y_true": self.y[i], "y_pred": predicted[i]}
-            for i in range(len(self.X))
-        ]
+        X_flat = np.array(self.X).flatten()  # pastikan bentuknya array NumPy
+        result = []
+        for x, y_true, y_pred in zip(X_flat, self.y, predicted):
+            result.append({"x": x, "y_true": y_true, "y_pred": y_pred})
+        return result
+
