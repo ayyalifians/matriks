@@ -1,39 +1,159 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Prediksi Nilai Mahasiswa</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body { font-family: Arial; margin: 40px; background: #fafafa; }
-    h1 { text-align: center; }
-    canvas { width: 80%; max-width: 700px; margin: auto; display: block; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Prediksi Nilai Mahasiswa</title>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px auto;
+            max-width: 900px;
+            background: #f5f7fb;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-box {
+            background: #eef2ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: #4c6ef5;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3b5bdb;
+        }
+
+        input {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #aaa;
+        }
+    </style>
 </head>
 <body>
-  <h1>Prediksi Nilai Mahasiswa Berdasarkan Lama Belajar</h1>
-  <canvas id="chart"></canvas>
 
-  <script>
-    const data = {{ data|tojson }};
-    const labels = data.map(d => d.x);
-    const actual = data.map(d => d.y_true);
-    const predicted = data.map(d => d.y_pred);
+    <h1>📊 Prediksi Nilai Berdasarkan Lama Belajar</h1>
 
-    new Chart(document.getElementById('chart'), {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          { label: 'Nilai Asli', data: actual, backgroundColor: 'rgba(54, 162, 235, 0.7)' },
-          { label: 'Prediksi', data: predicted, backgroundColor: 'rgba(255, 99, 132, 0.7)' }
-        ]
-      },
-      options: {
-        scales: { y: { beginAtZero: true } },
-        plugins: { legend: { position: 'top' } }
-      }
-    });
-  </script>
+    <!-- Input Prediksi -->
+    <div class="card">
+        <h3>Masukkan Lama Belajar</h3>
+
+        <form id="predictForm">
+            <label>Lama Belajar (jam):</label><br>
+            <input type="number" step="0.1" name="lama_belajar" required>
+            <button type="submit">Prediksi Nilai</button>
+        </form>
+
+        <div id="hasilPrediksi" style="margin-top:15px; font-weight:bold;"></div>
+    </div>
+
+
+    <!-- Statistik -->
+    <div class="card">
+        <h3>Hasil Perhitungan Regresi</h3>
+
+        <div class="stat-box">
+            Intercept : <strong>{{ intercept }}</strong>
+        </div>
+        <div class="stat-box">
+            Koefisien (Slope) : <strong>{{ slope }}</strong>
+        </div>
+        <div class="stat-box">
+            R² Score : <strong>{{ r2_score }}</strong>
+        </div>
+    </div>
+
+    <!-- Grafik -->
+    <div class="card">
+        <h3>Visualisasi Regresi</h3>
+        <canvas id="regChart"></canvas>
+    </div>
+
+    <script>
+        // Data dari Flask
+        const x_vals = {{ x_vals|tojson }};
+        const y_true = {{ y_true|tojson }};
+        const y_pred = {{ y_pred|tojson }};
+
+        // Grafik dengan Chart.js
+        const ctx = document.getElementById("regChart").getContext("2d");
+        const regChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: "Data Asli",
+                        data: x_vals.map((x, i) => ({ x: x, y: y_true[i] })),
+                        pointBackgroundColor: "blue",
+                        pointRadius: 5
+                    },
+                    {
+                        label: "Garis Regresi",
+                        type: "line",
+                        data: x_vals.map((x, i) => ({ x: x, y: y_pred[i] })),
+                        borderColor: "red",
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: { title: { display: true, text: "Lama Belajar (jam)" } },
+                    y: { title: { display: true, text: "Nilai" } }
+                }
+            }
+        });
+
+        // AJAX untuk prediksi
+        document.getElementById("predictForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("hasilPrediksi").innerHTML =
+                        "<span style='color:red'>" + data.error + "</span>";
+                } else {
+                    document.getElementById("hasilPrediksi").innerHTML =
+                        "Prediksi nilai: <strong>" + data.prediksi + "</strong>";
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

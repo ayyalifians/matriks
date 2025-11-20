@@ -1,6 +1,7 @@
 # flask_app/app.py
 from flask import Flask
-from controllers.regression_controller import regression_bp
+from flask_app.controllers.regression_controller import regression_bp
+from flask_app.models.student_model import StudentModel
 
 class RegressionApp:
     """
@@ -20,4 +21,7 @@ class RegressionApp:
         self.app.run(debug=True, port=5000)
 
 if __name__ == "__main__":
-    RegressionApp().run()
+    app_instance = RegressionApp().app
+    app_instance.run()
+
+app = RegressionApp().app
