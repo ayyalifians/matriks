@@ -1,17 +1,17 @@
-# Gunakan base image Python versi 3.12 yang ringan
+# Gunakan Python versi ringan
 FROM python:3.12-slim
 
-# Tentukan working directory di dalam container
+# Set direktori kerja
 WORKDIR /app
 
-# Copy seluruh file project ke container
+# Salin semua file ke dalam container
 COPY . /app
 
-# Install dependencies dari requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependensi
+RUN pip install flask
 
-# Ekspos port Flask (5000)
+# Buka port 5000
 EXPOSE 5000
 
-# Jalankan aplikasi Flask (OOP)
+# Jalankan aplikasi Flask
 CMD ["python", "flask_app/app.py"]
